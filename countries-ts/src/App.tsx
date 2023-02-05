@@ -2,13 +2,17 @@ import { useState, useEffect } from "react";
 import "./App.css";
 import axios from "axios";
 import { CountryType } from "./types";
+import Country from "./components/Country";
+import Loading from "./components/Loading";
 
 function App() {
   const [countries, setCountries] = useState<CountryType[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const getCountries = async () => {
     const { data } = await axios.get<CountryType[]>("https://restcountries.com/v2/all");
     setCountries(data);
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -18,9 +22,11 @@ function App() {
   console.log(countries);
   return (
     <div>
-      {countries.map((item) => (
-        <p>{item.name} - {item.capital}</p>
-      ))}
+      <Loading loading={loading}>
+        {countries.map((item) => (
+          <Country country={item} key={item.name} />
+        ))}
+      </Loading>
     </div>
   );
 }
