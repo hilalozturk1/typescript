@@ -1,24 +1,26 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useState, useEffect } from "react";
+import "./App.css";
+import axios from "axios";
+import { CountryType } from "./types";
 
 function App() {
+  const [countries, setCountries] = useState<CountryType[]>([]);
+
+  const getCountries = async () => {
+    const { data } = await axios.get<CountryType[]>("https://restcountries.com/v2/all");
+    setCountries(data);
+  };
+
+  useEffect(() => {
+    getCountries();
+  }, []);
+
+  console.log(countries);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      {countries.map((item) => (
+        <p>{item.name} - {item.capital}</p>
+      ))}
     </div>
   );
 }
